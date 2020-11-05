@@ -20,14 +20,14 @@ class GraphTree:
         parent_name = ''
         if not (tree.data in nx.get_node_attributes(self.G, 'label')):
             parent_name = tree.data
-            self.G.add_node(tree.data, label=tree.data)
+            self.G.add_node(tree.data, label=tree.data+'\n'+'pos: '+str(tree.statistics["p"])+'\n'+'neg: '+str(tree.statistics["n"]))
         else:
             contador = 0
             for node in nx.get_node_attributes(self.G, 'label'):
                 if tree.data in node:
                     contador += 1
             parent_name = f"{tree.data}{contador}"
-            self.G.add_node(parent_name, label=tree.data)
+            self.G.add_node(parent_name, label=tree.data+'\n'+'pos: '+str(tree.statistics["p"])+'\n'+'neg: '+str(tree.statistics["n"]))
         if parent != None:
             contador = 0
             for node in nx.get_node_attributes(self.G, 'label'):

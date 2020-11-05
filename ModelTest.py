@@ -27,6 +27,8 @@ class ModelTest:
         basic_statistics = self.basicModelStatistics(confusion_matrix)
         self.plotModelStatistics(basic_statistics)
 
+        return confusion_matrix, basic_statistics
+
 
     # Runs a series of predictions based on a list of observations
     def runPrediction(self, test_data, model):
@@ -106,7 +108,7 @@ class ModelTest:
         conf_m.columns.name = "Actual"
         plt.figure(figsize=(10,7))
         sb.set(font_scale=1.4)
-        sb.heatmap(conf_m, cmap="Blues", annot=True, annot_kws={"size": 16}, fmt='d')
+        sb.heatmap(conf_m, cmap="Blues", annot=True, annot_kws={"size": 24}, fmt='d')
         plt.show()
 
     # Returns the calculations of basic model performance statistics
@@ -131,19 +133,22 @@ class ModelTest:
         # Print values in console
         for key, value in statistics.items():
             print(f"{key}-> {value}")
-        '''
-        labels = []
+
         data = []
         for key, value in statistics.items():
-            labels.append(key)
-            data.append([value])
+            data.append([key, round(value, 4)])
 
-        ax = plt.subplot(111, frame_on=False)
+        fig = plt.figure(dpi=80)
+        ax = fig.add_subplot(1, 1, 1)
+
         ax.xaxis.set_visible(False)
         ax.yaxis.set_visible(False)
 
         #ax.figure(2)
-        ax.table(cellText=data,rowLabels=labels )
+        table = ax.table(cellText=data,loc='center' )
+        table.set_fontsize(14)
+        table.scale(1,4)
+        ax.axis('off')
         #plt.show()
-        '''
+
     """ENDING OF MODEL VALIDATION CODE SECTION"""

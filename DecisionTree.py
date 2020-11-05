@@ -1,21 +1,29 @@
 from math import log2 as log
 import numpy as np
 import pandas as pd
+from ModelTest import ModelTest
 from Node import Node
 from GraphTree import GraphTree
 
 
 class DecisionTree:
 
-    def __init__(self):
+    def __init__(self,
+                 tree_target_file='Unpruned_Tree.pickle',
+                 image_target_file='decisiontree.png',
+                 test_data_file="training_data.csv"
+                 ):
         # Empty dataset slot
         self.dataset = None
         self.dtree = None
         self.pos_class = None
         self.neg_class = None
+        self.tree_target_file = tree_target_file
+        self.image_target_file = image_target_file
+        self.test_data_file = test_data_file
 
     """BEGINNING OF MODEL TRAINING CODE SECTION"""
-    def trainModel(self, dataset):
+    def trainModel(self, dataset, validate=False):
         print("Beginning training on Dataset...")
         self.dataset = dataset
 
@@ -28,12 +36,20 @@ class DecisionTree:
         self.dtree = self.decisionTreeLearning(self.dataset.copy(), self.dataset.copy())
 
         # Saves the tree in a pickle file
-        pd.to_pickle(self.dtree, "Unpruned_Tree.pickle")
+        pd.to_pickle(self.dtree, self.tree_target_file)
 
         self.printTree(self.dtree, 0)
 
-        graph = GraphTree(self.dtree, 'decisiontree.png')
+        # Creates a visual representation of the Decision Tree
+        graph = GraphTree(self.dtree, self.image_target_file)
         graph.graphTree()
+
+        # Runs the statistics model validation
+        if validate:
+            test = ModelTest()
+            return test.testModel(self.tree_target_file, self.test_data_file)
+
+
 
     # Entropy Calculation based on p and n disjunct observations
     def crossEntropy(self, p, n):

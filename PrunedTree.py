@@ -1,4 +1,3 @@
-from Node import Node
 import pandas as pd
 from scipy import stats
 from GraphTree import GraphTree
@@ -8,6 +7,8 @@ class PrunedTree:
     def __init__(self):
         self.dtree = None
         self.orginal_tree = None
+        self.tree_target_file = None
+        self.image_target_file = None
 
     '''BEGINNING OF TREE PRUNING CODE SECTION'''
     # Pruns the original tree
