@@ -1,18 +1,28 @@
 import pandas as pd
 from scipy import stats
 from GraphTree import GraphTree
+from ModelTest import ModelTest
+
 
 class PrunedTree:
 
-    def __init__(self):
+    def __init__(
+            self,
+            tree_target_file=r'Pickle Models\Pruned_Tree.pickle',
+            image_target_file=r'Tree Images\decisionprunedtree.png',
+            test_data_file=r'Datasets\training_data.csv',
+            threshold=0.05
+    ):
         self.dtree = None
         self.orginal_tree = None
-        self.tree_target_file = None
-        self.image_target_file = None
+        self.tree_target_file = tree_target_file
+        self.image_target_file = image_target_file
+        self.test_data_file = test_data_file
+        self.threshold = threshold
 
     '''BEGINNING OF TREE PRUNING CODE SECTION'''
     # Pruns the original tree
-    def pruneTree(self, tree_file):
+    def pruneTree(self, tree_file, validate=False, save_image=False):
 
         # Reads the pickle file containing the original tree
         self.orginal_tree = pd.read_pickle(tree_file)
@@ -20,10 +30,16 @@ class PrunedTree:
         self.recursivePruning(self.orginal_tree)
         self.dtree = self.orginal_tree
 
-        pd.to_pickle(self.dtree, "PrunedTree.pickle")
+        pd.to_pickle(self.dtree, self.tree_target_file)
 
-        graph = GraphTree(self.dtree, 'prunedtree.png')
-        graph.graphTree()
+        if save_image:
+            graph = GraphTree(self.dtree, self.image_target_file)
+            graph.graphTree()
+
+        # Runs the statistics model validation
+        if validate:
+            test = ModelTest()
+            return test.testModel(self.tree_target_file, self.test_data_file)
 
     def recursivePruning(self, tree):
 
@@ -46,7 +62,7 @@ class PrunedTree:
                     #print(f"{p_k} - {n_k} vs {pk_hat} - {nk_hat}")
                 #print(f"{tree.data}->{stats.chi2.pdf(summation, len(tree.children)-1)} - {summation} - {p} - {n} - {len(tree.children)-1}")
                 #print(f"{stats.chi2.pdf(0.0,8)}")
-                if stats.chi2.pdf(summation, len(tree.children)-1) > 0.05 or self.sameLabel(tree.children):
+                if stats.chi2.pdf(summation, len(tree.children)-1) > self.threshold or self.sameLabel(tree.children):
                     self.pruneLeaves(tree)
 
     def sameLabel(self, children):

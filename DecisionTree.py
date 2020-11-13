@@ -9,9 +9,9 @@ from GraphTree import GraphTree
 class DecisionTree:
 
     def __init__(self,
-                 tree_target_file='Unpruned_Tree.pickle',
-                 image_target_file='decisiontree.png',
-                 test_data_file="training_data.csv"
+                 tree_target_file=r'Pickle Models\Unpruned_Tree.pickle',
+                 image_target_file=r'Tree Images\decisiontree.png',
+                 test_data_file=r'Datasets\training_data.csv'
                  ):
         # Empty dataset slot
         self.dataset = None
@@ -23,7 +23,8 @@ class DecisionTree:
         self.test_data_file = test_data_file
 
     """BEGINNING OF MODEL TRAINING CODE SECTION"""
-    def trainModel(self, dataset, validate=False):
+
+    def trainModel(self, dataset, validate=False, save_image=False):
         print("Beginning training on Dataset...")
         self.dataset = dataset
 
@@ -38,18 +39,17 @@ class DecisionTree:
         # Saves the tree in a pickle file
         pd.to_pickle(self.dtree, self.tree_target_file)
 
-        self.printTree(self.dtree, 0)
+        if save_image:
+            self.printTree(self.dtree, 0)
 
-        # Creates a visual representation of the Decision Tree
-        graph = GraphTree(self.dtree, self.image_target_file)
-        graph.graphTree()
+            # Creates a visual representation of the Decision Tree
+            graph = GraphTree(self.dtree, self.image_target_file)
+            graph.graphTree()
 
         # Runs the statistics model validation
         if validate:
             test = ModelTest()
             return test.testModel(self.tree_target_file, self.test_data_file)
-
-
 
     # Entropy Calculation based on p and n disjunct observations
     def crossEntropy(self, p, n):
@@ -102,7 +102,7 @@ class DecisionTree:
 
         return summation
 
-    #Determines p and n values
+    # Determines p and n values
     def nodeStatistics(self, dataset):
         # Mask to filter by class
         class_mask = dataset['class'] == self.pos_class
@@ -118,18 +118,18 @@ class DecisionTree:
 
         max_attr = ""
         max_goal = -1
-        print("#####################################################################")
+        # print("#####################################################################")
         for attribute in dataset.columns:
             goal = self.Goal(str(attribute), p, n, class_mask, dataset)
-            print(f"{str(attribute)} -> {goal}")
+            # print(f"{str(attribute)} -> {goal}")
             if goal > max_goal and attribute != 'class':
                 max_attr = str(attribute)
                 max_goal = goal
-        print(f"{str(max_attr)} -> {max_goal}")
-        print("#####################################################################")
+        # print(f"{str(max_attr)} -> {max_goal}")
+        # print("#####################################################################")
         return max_attr, p, n
 
-    #Returns the mayority class
+    # Returns the mayority class
     def pluralityValue(self, dataset):
 
         p, n, _ = self.nodeStatistics(dataset)
@@ -145,22 +145,22 @@ class DecisionTree:
     def decisionTreeLearning(self, data, parent_data):
         if data.empty:
             # Return its parent's plurality value
-            print("RETURNING")
+            # print("RETURNING")
             p, n, _ = self.nodeStatistics(parent_data)
             return Node(self.pluralityValue(parent_data), p, n, self.pos_class, self.neg_class)
         elif len(data.index) == data.loc[(data['class'] == self.pos_class), 'class'].agg('count') or \
                 len(data.index) == data.loc[~(data['class'] == self.pos_class), 'class'].agg('count'):
             # Return Classification
-            print("RETURNING")
+            # print("RETURNING")
             p, n, _ = self.nodeStatistics(data)
             return Node(list(data['class'])[0], p, n, self.pos_class, self.neg_class)
         elif data.shape[1] == 1:
             # Return its own plurality value
-            print("RETURNING")
+            # print("RETURNING")
             p, n, _ = self.nodeStatistics(data)
             return Node(self.pluralityValue(data), p, n, self.pos_class, self.neg_class)
         else:
-            #Split the data based on the best split attribute
+            # Split the data based on the best split attribute
             split_attribute, p, n = self.bestSplitCandidate(data)
             tree = Node(split_attribute, p, n, self.pos_class, self.neg_class)
             for value in np.unique(np.array(self.dataset[split_attribute])):
@@ -169,13 +169,13 @@ class DecisionTree:
                     data.copy(),
                 )
                 tree.addChild(subtree, value)
-            print("RETURNING")
+            # print("RETURNING")
             return tree
 
     def printTree(self, tree, tabs):
         tab = "     "
-        print(f"{tabs*tab}{tree.data}")
+        print(f"{tabs * tab}{tree.data}")
         for child in tree.children:
-            self.printTree(child[0], tabs+1)
+            self.printTree(child[0], tabs + 1)
 
     """ENDING OF MODEL TRAINING CODE SECTION"""

@@ -12,7 +12,7 @@ class ModelTest:
     """BEGINNING OF MODEL VALIDATION CODE SECTION"""
 
     #Runs a validation test for a particular tree model
-    def testModel(self, tree_file, test_data_file):
+    def testModel(self, tree_file, test_data_file, plot=False):
 
         test_set = pd.read_csv(test_data_file)
         dtree = pd.read_pickle(tree_file)
@@ -22,10 +22,12 @@ class ModelTest:
         predictions = self.runPrediction(test_set, dtree)
 
         confusion_matrix = self.buildConfusionMatrix(predictions, list(test_set['class']))
-        self.plotConfusionMatrix(confusion_matrix)
+        if plot:
+            self.plotConfusionMatrix(confusion_matrix)
 
         basic_statistics = self.basicModelStatistics(confusion_matrix)
-        self.plotModelStatistics(basic_statistics)
+        if plot:
+            self.plotModelStatistics(basic_statistics)
 
         return confusion_matrix, basic_statistics
 
@@ -83,7 +85,7 @@ class ModelTest:
             elif prediction == self.neg_class and prediction != train_labels[index]:
                 fn += 1
                 op = "fn"
-            print(f"{prediction} -> {train_labels[index]} -> {op}")
+            #print(f"{prediction} -> {train_labels[index]} -> {op}")
 
         conf_matrix_dict = {'tp': tp, 'fp': fp, 'tn': tn, 'fn': fn}
 
@@ -118,11 +120,18 @@ class ModelTest:
         tn = conf_matrix_dict["tn"]
         fn = conf_matrix_dict["fn"]
 
+        recall = tp / (tp + fn)
         accuracy = (tp + tn) / (tp + tn + fp + fn)
         precision = tp / (tp + fp)
-        recall = tp / (tp + fn)
         f1 = 2 * precision * recall / (precision + recall)
-
+        '''
+        if tp + fp != 0:
+            precision = tp / (tp + fp)
+            f1 = 2 * precision * recall / (precision + recall)
+        else:
+            precision = 0
+            f1 = 0
+        '''
         statistics_dict = {'accuracy': accuracy, 'precision': precision, 'recall': recall, 'f1': f1}
 
         return statistics_dict
