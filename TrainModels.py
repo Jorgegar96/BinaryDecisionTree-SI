@@ -12,6 +12,8 @@ def main():
     training_data = r'Datasets\training_data.csv'
     if len(sys.argv) > 1:
         training_data = f'{sys.argv[1]}'
+    else:
+        print("No argument found, the default training file will be used.")
 
     df = pd.read_csv(training_data)
 

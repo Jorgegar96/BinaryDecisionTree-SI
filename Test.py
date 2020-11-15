@@ -6,6 +6,8 @@ def main():
     testing_data = r'Datasets\testing_data.csv'
     if len(sys.argv) > 1:
         testing_data = f'{sys.argv[1]}'
+    else:
+        print("No argument found, the default testing file will be used.")
 
     print("Testing Original Model:")
     test = ModelTest()
