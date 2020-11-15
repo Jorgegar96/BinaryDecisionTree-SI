@@ -110,7 +110,7 @@ class ModelTest:
         conf_m.columns.name = "Actual"
         plt.figure(figsize=(10,7))
         sb.set(font_scale=1.4)
-        sb.heatmap(conf_m, cmap="Blues", annot=True, annot_kws={"size": 24}, fmt='d')
+        sb.heatmap(conf_m, cmap="Blues", annot=True, annot_kws={"size": 24}, fmt='d').set_title("Confusion Matrix")
         plt.show()
 
     # Returns the calculations of basic model performance statistics
@@ -158,6 +158,6 @@ class ModelTest:
         table.set_fontsize(14)
         table.scale(1,4)
         ax.axis('off')
-        #plt.show()
+        plt.show()
 
     """ENDING OF MODEL VALIDATION CODE SECTION"""

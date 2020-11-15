@@ -24,6 +24,8 @@ class PrunedTree:
     # Pruns the original tree
     def pruneTree(self, tree_file, validate=False, save_image=False):
 
+        print("Beginning Tree Pruning...")
+
         # Reads the pickle file containing the original tree
         self.orginal_tree = pd.read_pickle(tree_file)
 
@@ -31,6 +33,8 @@ class PrunedTree:
         self.dtree = self.orginal_tree
 
         pd.to_pickle(self.dtree, self.tree_target_file)
+
+        print("Pruning Finished")
 
         if save_image:
             graph = GraphTree(self.dtree, self.image_target_file)

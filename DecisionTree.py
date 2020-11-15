@@ -39,8 +39,10 @@ class DecisionTree:
         # Saves the tree in a pickle file
         pd.to_pickle(self.dtree, self.tree_target_file)
 
+        print("Training Finished")
+
         if save_image:
-            self.printTree(self.dtree, 0)
+            #self.printTree(self.dtree, 0)
 
             # Creates a visual representation of the Decision Tree
             graph = GraphTree(self.dtree, self.image_target_file)
