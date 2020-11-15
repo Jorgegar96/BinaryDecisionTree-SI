@@ -11,11 +11,11 @@ def main():
 
     print("Testing Original Model:")
     test = ModelTest()
-    test.testModel(r'Pickle Models\Unpruned_Tree.pickle', testing_data, plot=True)
+    test.testModel(r'Pickle Models\Unpruned_Tree.pickle', testing_data, plot=True, title="Original Tree")
 
     print("Testing Pruned Model:")
     test = ModelTest()
-    test.testModel(r'Pickle Models\Pruned_Tree.pickle', testing_data, plot=True)
+    test.testModel(r'Pickle Models\Pruned_Tree.pickle', testing_data, plot=True, title="Pruned Tree")
 
 
 if __name__ == "__main__":

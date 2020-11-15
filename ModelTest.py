@@ -12,7 +12,7 @@ class ModelTest:
     """BEGINNING OF MODEL VALIDATION CODE SECTION"""
 
     #Runs a validation test for a particular tree model
-    def testModel(self, tree_file, test_data_file, plot=False):
+    def testModel(self, tree_file, test_data_file, plot=False, title="Model"):
 
         test_set = pd.read_csv(test_data_file)
         dtree = pd.read_pickle(tree_file)
@@ -23,11 +23,11 @@ class ModelTest:
 
         confusion_matrix = self.buildConfusionMatrix(predictions, list(test_set['class']))
         if plot:
-            self.plotConfusionMatrix(confusion_matrix)
+            self.plotConfusionMatrix(confusion_matrix, title)
 
         basic_statistics = self.basicModelStatistics(confusion_matrix)
         if plot:
-            self.plotModelStatistics(basic_statistics)
+            self.plotModelStatistics(basic_statistics, title)
 
         return confusion_matrix, basic_statistics
 
@@ -92,7 +92,7 @@ class ModelTest:
         return conf_matrix_dict
 
     #Plots confusion matrix using seaborn
-    def plotConfusionMatrix(self, confusion_matrix_dict):
+    def plotConfusionMatrix(self, confusion_matrix_dict, title):
 
         # Print values in console
         for key, value in confusion_matrix_dict.items():
@@ -110,7 +110,8 @@ class ModelTest:
         conf_m.columns.name = "Actual"
         plt.figure(figsize=(10,7))
         sb.set(font_scale=1.4)
-        sb.heatmap(conf_m, cmap="Blues", annot=True, annot_kws={"size": 24}, fmt='d').set_title("Confusion Matrix")
+        sb.heatmap(conf_m, cmap="Blues", annot=True, annot_kws={"size": 24}, fmt='d')\
+            .set_title(f"{title} Confusion Matrix")
         plt.show()
 
     # Returns the calculations of basic model performance statistics
@@ -137,7 +138,7 @@ class ModelTest:
         return statistics_dict
 
     #Plots table with basic performance statistics
-    def plotModelStatistics(self, statistics):
+    def plotModelStatistics(self, statistics, title):
 
         # Print values in console
         for key, value in statistics.items():
@@ -149,12 +150,13 @@ class ModelTest:
 
         fig = plt.figure(dpi=80)
         ax = fig.add_subplot(1, 1, 1)
+        fig.suptitle(f"{title} Performance")
 
         ax.xaxis.set_visible(False)
         ax.yaxis.set_visible(False)
 
         #ax.figure(2)
-        table = ax.table(cellText=data,loc='center' )
+        table = ax.table(cellText=data, loc='center')
         table.set_fontsize(14)
         table.scale(1,4)
         ax.axis('off')
