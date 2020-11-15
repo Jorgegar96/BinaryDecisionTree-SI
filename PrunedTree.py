@@ -35,11 +35,13 @@ class PrunedTree:
         pd.to_pickle(self.dtree, self.tree_target_file)
 
         print("Pruning Finished")
+        print(f'Tree model has been saved to "{self.tree_target_file}"')
 
         if save_image:
             graph = GraphTree(self.dtree, self.image_target_file)
             graph.graphTree()
-
+            print(f'Tree image has been saved to "{self.image_target_file}"')
+        print("-"*40)
         # Runs the statistics model validation
         if validate:
             test = ModelTest()
